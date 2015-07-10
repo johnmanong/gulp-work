@@ -12,8 +12,11 @@ var paths = {
   },
 
   dist: {
-    scripts: ['app/build/js/index.js'],
-    stylesheets: ['app/build/stylesheets/index.css'],
+    scripts: {
+      dir: 'app/build/',
+      name: 'all.index.js'
+    },
+    stylesheets: ['app/build/index.css'],
   }
 };
 
@@ -33,19 +36,19 @@ gulp.task('stylesheets', ['clean'], function() {
 gulp.task('scripts', ['clean'], function() {
   // Minify and copy all JavaScript (except vendor scripts)
   // with sourcemaps all the way down
-  return gulp.src(paths.scripts)
-    .pipe(sourcemaps.init())
-      .pipe(uglify())
-      .pipe(concat('all.min.js'))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('build/js'));
+  return gulp.src(paths.src.scripts)
+             .pipe(sourcemaps.init())
+             .pipe(uglify())
+             .pipe(concat(paths.dist.scripts.name))
+             .pipe(sourcemaps.write())
+             .pipe(gulp.dest(paths.dist.scripts.dir));
 });
 
 // watcher
 gulp.task('watch', function() {
   // Rerun the task when a file changes
-  gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.stylesheets, ['stylesheets']);
+  gulp.watch(paths.src.scripts, ['scripts']);
+  gulp.watch(paths.src.stylesheets, ['stylesheets']);
 });
 
 // default task
