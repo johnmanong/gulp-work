@@ -2,6 +2,10 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
+var sass = require('gulp-sass');
+var webserver = require('gulp-webserver');
+
+
 var del = require('del');
 
 
@@ -16,7 +20,10 @@ var paths = {
       dir: 'app/build/',
       name: 'all.index.js'
     },
-    stylesheets: ['app/build/index.css'],
+    stylesheets: {
+      dir: 'app/build/',
+      name: 'index.css'
+    }
   }
 };
 
@@ -28,8 +35,11 @@ gulp.task('clean', function() {
 
 // sass build
 gulp.task('stylesheets', ['clean'], function() {
-  console.log('stylesheets')
-  return;
+  return gulp.src(paths.src.stylesheets)
+    .pipe(sourcemaps.init())
+      .pipe(sass().on('error', sass.logError))
+   .pipe(sourcemaps.write())
+   .pipe(gulp.dest(paths.dist.stylesheets.dir))
 });
 
 // javascript build
@@ -37,11 +47,11 @@ gulp.task('scripts', ['clean'], function() {
   // Minify and copy all JavaScript (except vendor scripts)
   // with sourcemaps all the way down
   return gulp.src(paths.src.scripts)
-             .pipe(sourcemaps.init())
-             .pipe(uglify())
-             .pipe(concat(paths.dist.scripts.name))
-             .pipe(sourcemaps.write())
-             .pipe(gulp.dest(paths.dist.scripts.dir));
+   .pipe(sourcemaps.init())
+     .pipe(uglify())
+     .pipe(concat(paths.dist.scripts.name))
+   .pipe(sourcemaps.write())
+   .pipe(gulp.dest(paths.dist.scripts.dir));
 });
 
 // watcher
@@ -51,5 +61,23 @@ gulp.task('watch', function() {
   gulp.watch(paths.src.stylesheets, ['stylesheets']);
 });
 
+// web server
+function webserverTaskFactory(options) {
+  options = options || {};
+
+  return function() {
+    gulp.src('app')
+      .pipe(webserver({
+        livereload: true,
+        open: options.open || false
+      }));
+    }
+}
+
+gulp.task('webserver', webserverTaskFactory());
+gulp.task('webserver:open', webserverTaskFactory({open: true}));
+
 // default task
-gulp.task('default', ['watch', 'scripts', 'stylesheets']);
+var defaultTasks = ['watch', 'scripts', 'stylesheets']
+gulp.task('default',  defaultTasks.concat(['webserver']));
+gulp.task('open', defaultTasks.concat(['webserver:open']));
