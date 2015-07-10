@@ -4,8 +4,6 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var webserver = require('gulp-webserver');
-
-
 var del = require('del');
 
 
@@ -17,11 +15,11 @@ var paths = {
 
   dist: {
     scripts: {
-      dir: 'app/build/',
+      dir: 'app/build',
       name: 'all.index.js'
     },
     stylesheets: {
-      dir: 'app/build/',
+      dir: 'app/build',
       name: 'index.css'
     }
   }
@@ -29,7 +27,9 @@ var paths = {
 
 // clean up dist
 gulp.task('clean', function() {
-  console.log('clean')
+  del(['app/build/*'], function (err, paths) {
+      console.log('Deleted files/folders:\n', paths.join('\n'));
+  });
   return;
 });
 
