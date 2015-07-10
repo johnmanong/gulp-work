@@ -1,0 +1,15 @@
+{
+  "name": "gulp-work",
+  "version": "0.0.0",
+  "description": "starter kit for quick projects, in gulp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "johnmanong",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.6.0"
+  }
+}
