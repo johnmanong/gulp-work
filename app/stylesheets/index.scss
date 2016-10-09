@@ -10,6 +10,14 @@ $fs-section-header: 36px;
 $arrow-size: 20px;
 $arrow-stroke: 2px;
 
+$desktop-width: 768px;
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   max-width: 720px;
@@ -24,8 +32,12 @@ section {
 
 	h2 {
 		font-weight: $fw-light;
-		font-size: $fs-section-header;
 		margin-top: 0;
+		font-size: 32px;
+
+		@include desktop {
+			font-size: $fs-section-header;
+		}
 	}
 
 	a {
@@ -77,7 +89,7 @@ section {
 
 .divider {
 	border-bottom: 1px solid rgba(220,220,220, .4);
-	width: 600px;
+	max-width: 600px;
 	margin: 0 auto;
 	position: relative;
 }
