@@ -3,55 +3,68 @@
 smoothScroll.init();
 
 (function() {
-	// TODO - do not use raw html
-	function makeTagStr(tag, className, contentList) {
-		var content = contentList.join('');
-		var attrList = [];
-		// should use attrs, not className
-		if (className) {
-			attrList.push(['class', '="', className, '"'].join(''));
-		}
+	// b/c it looks ugly
+	function listToStr(list) { return list.join('') }
 
-		var attrStr = attrList.join(' ');
-		return '<' + tag + ' ' + attrStr + '>' + content + '</' + tag  + '>';
+	function getAttrStr(attrObj) {
+		var attrList = [];
+		for (var prop in attrObj) {
+			if (!attrObj.hasOwnProperty(prop)) { continue }
+			attrList.push(listToStr([prop, '=', '"', attrObj[prop],'"']));
+		}
+		return attrList.join(' ');
+	}
+
+	function openTag(tag, attrStr) { 
+		attrStr = attrStr ? ' ' + attrStr : ''
+		return listToStr(['<', tag, attrStr, '>']);
+	}
+
+	function closeTag(tag) {
+		return listToStr(['</', tag, '>']);
+	}
+
+	function makeTag(tag, attrObj, contentList) {
+		return listToStr([openTag(tag, getAttrStr(attrObj || {})), contentList.join(''), closeTag(tag)]);
 	}
 
 	// FAQ is a list of question answer(s)
 	var FAQS = [
 		{
 			q: 'Why the rush?',
-			a: [
-				'We\'ve been together for 9 years, so what better time than now? <br/>And, no, Jen is not pregnant.',
-			]
+			a: 'We\'ve been together for 9 years, so what better time than now? <br/>And, no, Jen is not pregnant.',
 		},
 		{
-			q: 'What time is check-in/check-out?',
-			a: 'Standard check in is 3PM and check out is 11AM, but the Airbnb host is open to arranging earlier/later times as needed. Once everyone has their flight booked we will adjust the reservation accordingly.',
+			q: 'Is the wedding a secret?',
+			a: 'No, feel free to share the news if you feel so inclined.',
 		},
 		{
-			q: 'Wont it be cold?',
-			a: 'Yes, please check the forecast before packing. Don\'t forget to bring a warm jacket.',
+			q: 'So...this is it?',
+			a: 'Nope! We are still planning to have a larger wedding celebration in CA next year, preferrably before our domain name expires a year from now.',
 		},
 		{
 			q: 'What should I wear to the ceremony?',
 			a: 'Wear something that makes you feel classy without sacrificing comfort. <br/>Remember, it will be cold.',
 		},
 		{
+			q: 'What time is check-in/check-out?',
+			a: 'Check-in is 3PM and check-out is 11AM, but the Airbnb host is flexible. Once everyone has their flights booked we can adjust accordingly.',
+		},
+		{
 			q: 'Will I meet Panda 🐶?',
 			a: 'Sadly, Panda is not allowed at the Airbnb, but we will make sure everyone meets her.',
-		}
+		},
 	];
 
 	var contentStr = '';
-
 	for (var i = 0; i < FAQS.length; i++) {
 		var faq = FAQS[i];
 		// question el
-		var qElStr = makeTagStr('div', 'faq-question', [faq.q]);
+		var qElStr = makeTag('div', {'class': 'faq-question'}, [faq.q]);
 		// answer el
-		var	aElStr = makeTagStr('div', 'faq-answer', [faq.a]);
+		var	aElStr = makeTag('div', {'class': 'faq-answer'}, [faq.a]);
 		// combine and append to overall content
-		contentStr += makeTagStr('div', 'faq', [qElStr, aElStr]);
+		contentStr += makeTag('div', {'class': 'faq'}, [qElStr, aElStr]);
 	}
 	document.getElementById('js-faq-wrapper').innerHTML = contentStr;
 }())
