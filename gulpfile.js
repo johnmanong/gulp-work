@@ -5,6 +5,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var webserver = require('gulp-webserver');
 var del = require('del');
+var noop = require('gulp-noop');
 
 
 var replace = require('gulp-replace');
@@ -40,24 +41,40 @@ gulp.task('clean', function() {
 });
 
 // sass build
-gulp.task('stylesheets', function() {
+function stlyesheetsBuild(useSrcMap) {
   return gulp.src(paths.src.stylesheets)
     .pipe(sourcemaps.init())
       .pipe(sass().on('error', sass.logError))
-   .pipe(sourcemaps.write())
+   .pipe(useSrcMap ? sourcemaps.write() : noop())
    .pipe(gulp.dest(paths.dist.stylesheets.dir))
+}
+
+gulp.task('stylesheets', function() {
+  return stlyesheetsBuild(true);
+});
+
+gulp.task('stylesheets-build', function() {
+  return stlyesheetsBuild(false);
 });
 
 // javascript build
-gulp.task('scripts', function() {
+function jsBuild(useSrcMap) {
   // Minify and copy all JavaScript (except vendor scripts)
   // with sourcemaps all the way down
   return gulp.src(paths.src.scripts)
    .pipe(sourcemaps.init())
      .pipe(uglify())
      .pipe(concat(paths.dist.scripts.name))
-   .pipe(sourcemaps.write())
+   .pipe(useSrcMap ? sourcemaps.write() : noop())
    .pipe(gulp.dest(paths.dist.scripts.dir));
+}
+
+gulp.task('scripts', function() {
+  return jsBuild(true);
+});
+
+gulp.task('scripts-build', function() {
+  return jsBuild(false);
 });
 
 // watcher
@@ -81,7 +98,7 @@ function webserverTaskFactory(options) {
 }
 
 // build compiled index.html file
-gulp.task('compile', ['clean', 'scripts', 'stylesheets'], function() {
+gulp.task('compile', ['clean', 'scripts-build', 'stylesheets-build'], function() {
   return gulp.src(paths.src.root)
     // inline stylesheets
     .pipe(replace(/<link[^>]*href="([^\.]+\.css)"[^>]*>/g, function(s, filename) {

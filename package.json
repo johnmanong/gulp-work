@@ -13,6 +13,7 @@
     "fs": "0.0.2",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.6.0",
+    "gulp-noop": "^1.0.0",
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^2.0.3",
     "gulp-sourcemaps": "^1.5.2",
