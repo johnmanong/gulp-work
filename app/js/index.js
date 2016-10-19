@@ -4,19 +4,24 @@ smoothScroll.init();
 
 (function() {
 	// TODO - do not use raw html
-	function makeTagStr(tag, className, content) {
-		var classStr = className ? 'class="' + className + '"' : '';
-		return '<' + tag + ' ' + classStr + '>' + content + '</' + tag  + '>';
+	function makeTagStr(tag, className, contentList) {
+		var content = contentList.join('');
+		var attrList = [];
+		// should use attrs, not className
+		if (className) {
+			attrList.push(['class', '="', className, '"'].join(''));
+		}
+
+		var attrStr = attrList.join(' ');
+		return '<' + tag + ' ' + attrStr + '>' + content + '</' + tag  + '>';
 	}
 
 	// FAQ is a list of question answer(s)
 	var FAQS = [
 		{
 			q: 'Why the rush?',
-			as: [
-				'We\'ve been together for 9 years, so what better time than now?',
-				'We\'ve lived in NYC for a while now, but have never spent the holidays here.',
-				'And, no, Jen is not pregnant.',
+			a: [
+				'We\'ve been together for 9 years, so what better time than now? <br/>And, no, Jen is not pregnant.',
 			]
 		},
 		{
@@ -42,26 +47,11 @@ smoothScroll.init();
 	for (var i = 0; i < FAQS.length; i++) {
 		var faq = FAQS[i];
 		// question el
-		var qElStr = makeTagStr('div', 'faq-question', faq.q);
+		var qElStr = makeTagStr('div', 'faq-question', [faq.q]);
 		// answer el
-		var aElStr = null;
-
-		// handle single answer
-		if (faq.a) {
-			aElStr = makeTagStr('div', 'faq-answer', faq.a);
-		}
-
-		// handle multi answer
-		if (faq.as) {
-			var answerStr = '';
-			for (var j = 0; j < faq.as.length; j++) {
-				var indexStr = j + 1 + '. ';
-				answerStr += makeTagStr('li', 'faq-answers-answer', indexStr + faq.as[j]);
-			}
-			aElStr = makeTagStr('ol', 'faq-answers', answerStr);
-		}
-		contentStr += makeTagStr('div', 'faq', qElStr + aElStr);
+		var	aElStr = makeTagStr('div', 'faq-answer', [faq.a]);
+		// combine and append to overall content
+		contentStr += makeTagStr('div', 'faq', [qElStr, aElStr]);
 	}
-		var faqWrapperEl = document.getElementById('js-faq-wrapper');
-		faqWrapperEl.innerHTML = contentStr;
+	document.getElementById('js-faq-wrapper').innerHTML = contentStr;
 }())
