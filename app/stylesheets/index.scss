@@ -3,6 +3,7 @@ $section-height: 100vh;
 
 $fw-light: 300;
 $fw-regular: 400;
+$fw-bold: 600;
 
 $fs-title: 48px;
 $fs-section-header: 36px;
@@ -47,8 +48,9 @@ section {
 		font-weight: $fw-regular;
 	}
 
-	ul {
+	ul, ol {
 		padding: 0;
+		margin: 0;
 	}
 
 	li {
@@ -114,4 +116,20 @@ section {
   border-right: $arrow-stroke solid rgba(220,220,220, 1);
   border-top: $arrow-stroke solid rgba(220,220,220, 1);
   transform: rotate(135deg);
+}
+
+// FAQ section
+.faq {
+	margin: $buffer;
+}
+
+.faq-question {
+	font-weight: $fw-bold;
+	margin-bottom: 3px;
+
+	&::before {
+		content: "Q:";
+		font-weight: $fw-bold;
+		margin-right: 10px;
+	}
 }
